@@ -1,37 +1,32 @@
 flag = 0;
 
-function createXMLHttpRequest(cbFunc){
-    var XMLhttpObject = null;
-    try{
-        XMLhttpObject = new XMLHttpRequest();
-    }catch(e){
-        try{
-            XMLhttpObject = new ActiveXObject("Msxml2.XMLHTTP");
-        }catch(e){
-            try{
-                XMLhttpObject = new ActiveXObject("Microsoft.XMLHTTP");
-            }catch(e){
-                return null;
-            }
-        }
-    }
-    if (XMLhttpObject) XMLhttpObject.onreadystatechange = cbFunc;
-    return XMLhttpObject;
-}
-
 function loadTextFile(){
-	httpObj = createXMLHttpRequest(TDT);
+	httpObj = createXMLHttpRequest(displayData);
 	if (httpObj){
 		httpObj.open("GET","TDT.csv",true);
 		httpObj.send(null);
 	}
-	if ((httpObj.readyState == 4) && (httpObj.status == 200)){
-		setup(httpObj.responseText);
-	}
+}
+
+//WebKit（KHTML）におけるXMLHttpRequestのresponceText文字化け防止処理
+var ajax_filter = function(t){return t};
+if(navigator.appVersion.indexOf( "KHTML" ) > -1){
+    ajax_filter = function(t){
+        var esc = escape(t);
+        return(esc.indexOf("%u") < 0 && esc.indexOf("%") > -1) ? decodeURIComponent(esc) : t
+    }
+}
+ 
+function displayData(){
+    if ((httpObj.readyState == 2) && (httpObj.status == 200)){
+        var text = ajax_filter(httpObj.responseText);
+        setup(text);
+    }
 }
 
 function setup(csv){//次回の発車時刻を特定しdepartureに代入
 		var arrayed_csv = csv.split('\n');
+			arrayed_csv = String(arrayed_csv);
 
 		var time = new Date();
 		var l,m,n;
@@ -70,20 +65,17 @@ function setup(csv){//次回の発車時刻を特定しdepartureに代入
 				n = j;
 			}
 		}
-
+			arrayed_csv = String(arrayed_csv[n]);
 		var departure = arrayed_csv[n].split(',');
 
-		TDT(departure);
-}
+		while(1){
+			disp(departure);
 
-function TDT(departure){
-	while(1){
-		setTimeout("disp(departure)",1000);
+			if(flag === 1)
+				break;
+		}
 
-		if(flag === 1)
-			break;
-	}
-	loadTextFile();
+		displayData();
 }
 
 function disp(departure){
@@ -92,16 +84,15 @@ function disp(departure){
 	var minute = time.getMinutes();
 	var second = time.getSeconds();
 
-	var hour_dif = String(departure[0] - hour),
-		minute_dif = String(departure[1] - minute),
-		second_dif = String(departure[2] - second);
-	// var // lastchild = document.body.lastChild,
-	// 	p = document.createElement('p');
-	// 	time_dif = document.createTextNode("hour_dif" + ":" + "minute_dif" + ":" + "second_dif");
+	var hour_dif = departure[0] - hour,
+		minute_dif = departure[1] - minute,
+		second_dif = departure[2] - second,
+		text = document.getElementById("TDT"),
+		time_dif = hour_dif + ":" + minute_dif + ":" + second_dif;
+	
+		text.innerHTML = "<div>" + time_dif + "</div>";
+		// document.getElementById("TDT").innerHTML = time_dif;
 
-	// document.body.appendChild(p).appendChild(time_dif);
-	// //document.body.replaceChild(time_dif,lastchild);
-	console.log("hour_dif" + ":" + "minute_dif" + ":" + "second_dif");
 	if((departure[0] == hour) && (departure[1] == minute) && (departure[2] == second))
 		flag = 1;
 }
