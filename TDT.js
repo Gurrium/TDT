@@ -1,4 +1,4 @@
-flag = 0,m = 0;
+flag = 0,m = 0,csv_text = '';
 
 function loadTextFile(){
 	httpObj = createXMLHttpRequest(displayData);
@@ -19,29 +19,36 @@ if(navigator.appVersion.indexOf( "KHTML" ) > -1){
  
 function displayData(){
     if ((httpObj.readyState == 4) && (httpObj.status == 200)){
-        var text = ajax_filter(httpObj.responseText);
-        // document.getElementById("TDT").innerHTML = "<div>test</div>";
-        main(text);
+        csv_text = ajax_filter(httpObj.responseText);
+        main(csv_text);
     }
 }
 
 function delay(){
-
+	var departure = setup(csv_text);
+	disp(departure);
 }
+
 function main(csv){
 	var departure = setup(csv);
 	// setup(csv);
 	// disp(departure);
 	// setInterval('disp',1000,departure);
 	// while(1){
-			// setTimeout('delay',1000,departure);
-			disp(departure);
+			// setTimeout('disp',1000);
+			// disp(departure);
+	console.log(departure);
+	var hoge = setInterval(function() {
+		var departure = setup(csv_text);
+		disp(departure);
 
-			if(flag === 1){
-				m++;
-				setup(csv);
-				flag = 0;
-			}
+	    //終了条件
+	    if (flag === 1){
+	    	flag = 0;
+			var departure = setup(csv_text);
+	    	m++;
+	    }
+	}, 1000);
 	// }
 
 }
@@ -85,22 +92,7 @@ function setup(csv){//次回の発車時刻を特定しdepartureに代入
 					m = j;
 				}
 			}
-			// for(var j = m;j < arrayed_csv.length;j++){
-			// 	var second = time.getSeconds();
-			// 	var dif = Number(arrayed_csv[j].substring(6,8)) - second;
-
-			// 	if((arrayed_csv[m].substring(3,5)) < (arrayed_csv[j].substring(3,5))) break;
-			// 	console.log(dif);
-			// 	if(dif < 0)//発車時刻が過ぎていたら回避
-			// 		continue;
-			// 	if(min_second > dif){
-			// 		min_second = dif;
-			// 		n = j;
-			// 	}
-			// }
 		}
-		// console.log(arrayed_csv[m],m);
-			//arrayed_csv = String(arrayed_csv[n]);
 		var departure = arrayed_csv[m].split(',');
 
 		return departure;
@@ -120,7 +112,6 @@ function disp(departure){
 		time_dif = hour_dif + ":" + minute_dif + ":" + second_dif;
 	
 		text.innerHTML = time_dif;
-		// document.getElementById("TDT").innerHTML = time_dif;
 
 	if((departure[0] == hour) && (departure[1] == minute) && (departure[2] == second))
 		flag = 1;
