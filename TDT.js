@@ -1,4 +1,4 @@
-flag = 0;
+flag = 0,m = 0;
 
 function loadTextFile(){
 	httpObj = createXMLHttpRequest(displayData);
@@ -18,64 +18,93 @@ if(navigator.appVersion.indexOf( "KHTML" ) > -1){
 }
  
 function displayData(){
-    if ((httpObj.readyState == 2) && (httpObj.status == 200)){
+    if ((httpObj.readyState == 4) && (httpObj.status == 200)){
         var text = ajax_filter(httpObj.responseText);
-        setup(text);
+        // document.getElementById("TDT").innerHTML = "<div>test</div>";
+        main(text);
     }
 }
 
-function setup(csv){//次回の発車時刻を特定しdepartureに代入
-		var arrayed_csv = csv.split('\n');
-			arrayed_csv = String(arrayed_csv);
+function delay(){
 
-		var time = new Date();
-		var l,m,n;
-		l = m = n = 0;
-
-		for(var j = 0;j < csv.length;j++){
-			var hour = time.getHours();
-			var min = 23,dif = arrayed_csv[j].substring(0,2) - hour;
-
-			if(dif < 0)//発車時刻が過ぎていたら回避
-				continue;
-			if(min > dif){
-				min = dif;
-				l = j;
-			}
-		}
-		for(var j = l;j < csv.length;j++){
-			var minute = time.getMinutes();
-			var min = 59,dif = arrayed_csv[j].substring(3,5) - minute;
-
-			if(dif < 0)//発車時刻が過ぎていたら回避
-				continue;
-			if(min > dif){
-				min = dif;
-				m = j;
-			}
-		}
-		for(var j = m;j < csv.length;j++){
-			var second = time.getSeconds();
-			var min = 59,dif = arrayed_csv[j].substring(6,8) - second;
-
-			if(dif < 0)//発車時刻が過ぎていたら回避
-				continue;
-			if(min > dif){
-				min = dif;
-				n = j;
-			}
-		}
-			arrayed_csv = String(arrayed_csv[n]);
-		var departure = arrayed_csv[n].split(',');
-
-		while(1){
+}
+function main(csv){
+	var departure = setup(csv);
+	// setup(csv);
+	// disp(departure);
+	// setInterval('disp',1000,departure);
+	// while(1){
+			// setTimeout('delay',1000,departure);
 			disp(departure);
 
-			if(flag === 1)
-				break;
-		}
+			if(flag === 1){
+				m++;
+				setup(csv);
+				flag = 0;
+			}
+	// }
 
-		displayData();
+}
+
+function setup(csv){//次回の発車時刻を特定しdepartureに代入
+
+		if(flag === 0){	
+			var arrayed_csv = csv.split('\n');
+
+			var time = new Date();
+			var hour = time.getHours();
+			var	minute = time.getMinutes();
+			var second = time.getSeconds();
+
+			var l,m;
+			l = m = 0;
+			var min_hour,min_minute,min_second;
+			min_hour = 23;min_minute = min_second = 59;
+
+			for(var j = 0;j < arrayed_csv.length;j++){
+				var dif = Number(arrayed_csv[j].substring(0,2)) - hour;
+
+				if(dif < 0){//発車時刻が過ぎていたら回避
+					continue;
+				}
+				if(min_hour > dif){
+					min_hour = dif;
+					l = j;
+				}
+			}
+			for(var j = l;j < arrayed_csv.length;j++){
+				var minute = time.getMinutes();
+				var dif = Number(arrayed_csv[j].substring(3,5)) - minute;
+
+				if((arrayed_csv[l].substring(0,2)) < (arrayed_csv[j].substring(0,2))) break;
+
+				if(dif < 0)//発車時刻が過ぎていたら回避
+					continue;
+				if(min_minute > dif){
+					min_minute = dif;
+					m = j;
+				}
+			}
+			// for(var j = m;j < arrayed_csv.length;j++){
+			// 	var second = time.getSeconds();
+			// 	var dif = Number(arrayed_csv[j].substring(6,8)) - second;
+
+			// 	if((arrayed_csv[m].substring(3,5)) < (arrayed_csv[j].substring(3,5))) break;
+			// 	console.log(dif);
+			// 	if(dif < 0)//発車時刻が過ぎていたら回避
+			// 		continue;
+			// 	if(min_second > dif){
+			// 		min_second = dif;
+			// 		n = j;
+			// 	}
+			// }
+		}
+		// console.log(arrayed_csv[m],m);
+			//arrayed_csv = String(arrayed_csv[n]);
+		var departure = arrayed_csv[m].split(',');
+
+		return departure;
+		
 }
 
 function disp(departure){
@@ -83,14 +112,14 @@ function disp(departure){
 	var hour = time.getHours();
 	var minute = time.getMinutes();
 	var second = time.getSeconds();
+	var hour_dif = Number(departure[0]) - hour,
+		minute_dif = Number(departure[1]) - minute - 1,
+		second_dif = 60 - second;
 
-	var hour_dif = departure[0] - hour,
-		minute_dif = departure[1] - minute,
-		second_dif = departure[2] - second,
-		text = document.getElementById("TDT"),
+	var	text = document.getElementById("TDT"),
 		time_dif = hour_dif + ":" + minute_dif + ":" + second_dif;
 	
-		text.innerHTML = "<div>" + time_dif + "</div>";
+		text.innerHTML = time_dif;
 		// document.getElementById("TDT").innerHTML = time_dif;
 
 	if((departure[0] == hour) && (departure[1] == minute) && (departure[2] == second))
