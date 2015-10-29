@@ -1,4 +1,4 @@
-var flag = 0,m = 0,csv_text = '';
+var do_leave = 0,m = 0,csv_text = '';
 
 function loadTextFile(){
 	httpObj = createXMLHttpRequest(displayData);
@@ -47,12 +47,16 @@ function main(csv){
 			console.log(departure);
 			disp(departure);
 
-		  //   //再読み込み	
-		  //   if (flag === 1){
-		  //   	m++;
-				// var departure = setup(csv_text);
-		  //   	flag = 0;
-		  //   }
+		    //再読み込み	
+		    if (do_leave === 1){
+		    	m++;
+		    	var next_train_time = setup(csv_text);
+				departure = next_train_time.split(',');
+				for(var i = 0;i < 3;i++){
+					departure[i] = Number(departure[i]);
+				}
+		    	do_leave = 0;
+		    }
 	}, 1000,departure);
 	// }
 
@@ -62,7 +66,7 @@ function setup(csv){//次回の発車時刻を特定しdepartureに代入
 
 		var arrayed_csv = csv.split('\n');
 
-		if(flag === 0){	
+		if(do_leave === 0){	
 
 			var time = new Date();
 			var hour = time.getHours();
@@ -128,7 +132,7 @@ function disp(departure){
 		console.log(departure);
 
 	// if((Number(departure[0]) == hour) && (Number(departure[1]) == minute) && (Number(departure[2]) == second))
-	if(hour_dif - minute_dif - second_dif)
-		console.log()
-		flag = 1;
+	if(!(hour_dif - minute_dif - second_dif))
+		console.log("フラグ建築")
+		do_leave = 1;
 }
