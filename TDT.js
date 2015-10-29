@@ -99,8 +99,12 @@ function disp(departure){
 	}
 
 	var	text = document.getElementById("TDT"),
-		time_dif = hour_dif + ":" + minute_dif + ":" + second_dif;
+		time_dif = zero_padding(hour_dif) + ":" + zero_padding(minute_dif) + ":" + zero_padding(second_dif);
 	
 		text.innerHTML = time_dif;
 		console.log(departure);
+}
+
+function zero_padding(num){
+	return ('0' + num).slice(-2);
 }
