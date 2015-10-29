@@ -1,4 +1,4 @@
-flag = 0,m = 0,csv_text = '';
+var flag = 0,m = 0,csv_text = '';
 
 function loadTextFile(){
 	httpObj = createXMLHttpRequest(displayData);
@@ -43,20 +43,20 @@ function main(csv){
 			// disp(departure);
 	var repeat = setInterval(function(departure) {
 		// var departure = setup(csv_text);
-	var arrayed_csv = setup(csv);
-		departure = arrayed_csv.split(',');
-		for(var i = 0;i < 3;i++){
-			departure[i] = Number(departure[i]);
-		}
-		console.log(departure);
-		disp(departure);
+		var arrayed_csv = setup(csv);
+			departure = arrayed_csv.split(',');
+			for(var i = 0;i < 3;i++){
+				departure[i] = Number(departure[i]);
+			}
+			console.log(departure);
+			disp(departure);
 
-	    //終了条件
-	  //   if (flag === 1){
-	  //   	m++;
-			// var departure = setup(csv_text);
-	  //   	flag = 0;
-	  //   }
+		  //   //再読み込み	
+		  //   if (flag === 1){
+		  //   	m++;
+				// var departure = setup(csv_text);
+		  //   	flag = 0;
+		  //   }
 	}, 1000,departure);
 	// }
 
@@ -82,8 +82,7 @@ function setup(csv){//次回の発車時刻を特定しdepartureに代入
 
 				if(dif < 0){//発車時刻が過ぎていたら回避
 					continue;
-				}
-				if(min_hour > dif){
+				}else{
 					min_hour = dif;
 					l = j;
 				}
@@ -94,9 +93,9 @@ function setup(csv){//次回の発車時刻を特定しdepartureに代入
 
 				if((arrayed_csv[l].substring(0,2)) < (arrayed_csv[j].substring(0,2))) break;
 
-				if(dif < 0)//発車時刻が過ぎていたら回避
+				if(dif < 0){//発車時刻が過ぎていたら回避
 					continue;
-				if(min_minute > dif){
+				}else{
 					min_minute = dif;
 					m = j;
 				}
@@ -120,7 +119,7 @@ function disp(departure){
 	var second = time.getSeconds();
 	var hour_dif = Number(departure[0]) - hour,
 		minute_dif = Number(departure[1]) - minute - 1,
-		second_dif = 60 + (Number(departure[2]) - second);
+		second_dif = 59 + (Number(departure[2]) - second);
 
 	var	text = document.getElementById("TDT"),
 		time_dif = hour_dif + ":" + minute_dif + ":" + second_dif;
@@ -129,6 +128,7 @@ function disp(departure){
 		console.log(departure);
 
 	// if((Number(departure[0]) == hour) && (Number(departure[1]) == minute) && (Number(departure[2]) == second))
-	if(departure[2] < 59)
+	if(hour_dif - minute_dif - second_dif)
+		console.log()
 		flag = 1;
 }
