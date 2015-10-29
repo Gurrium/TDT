@@ -51,7 +51,6 @@ function main(csv){
 }
 
 function setup(csv){//次回の発車時刻を特定しdepartureに代入
-
 	var arrayed_csv = csv.split('\n');
 
 	var time = new Date();
@@ -69,7 +68,7 @@ function setup(csv){//次回の発車時刻を特定しdepartureに代入
 		if(dif < 0){//発車時刻が過ぎていたら回避
 			continue;
 		}else {
-			if(arrayed_csv[j].substring(3,5) < minute && dif == 0){
+			if(arrayed_csv[j].substring(3,5) <= minute && dif == 0){
 				continue;
 			}
 			l = j;
