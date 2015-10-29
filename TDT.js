@@ -30,19 +30,23 @@ function delay(){
 }
 
 function main(csv){
-	var next_train_time = setup(csv);
-		departure = next_train_time.split(',');
-		for(var i = 0;i < 3;i++){
-			departure[i] = Number(departure[i]);
-		}
 	// setup(csv);
 	// disp(departure);
 	// setInterval('disp',1000,departure);
 	// while(1){
 			// setTimeout('disp',1000);
 			// disp(departure);
-	var repeat = setInterval(
-		function(departure) {
+
+	setInterval(function(){
+		console.log(csv);
+		var next_train_time = setup(csv);
+		console.log(next_train_time);
+		var departure = next_train_time.split(',');
+		console.log(departure);
+		for(var i = 0;i < 3;i++){
+			departure[i] = Number(departure[i]);
+		}
+		console.log(departure);
 		// var departure = setup(csv_text);
 			console.log(departure);
 			disp(departure);
@@ -53,16 +57,35 @@ function main(csv){
 				// var departure = setup(csv_text);
 		  //   	flag = 0;
 		  //   }
-	}, 1000,departure);
-	// }
+	}, 1000, csv);
 
+}
+
+function repeat(csv) {
+			var next_train_time = setup(csv);
+			var departure = next_train_time.split(',');
+			console.log(departure);
+			for(var i = 0;i < 3;i++){
+				departure[i] = Number(departure[i]);
+			}
+
+		// var departure = setup(csv_text);
+			console.log(departure);
+			disp(departure);
+
+		  //   //再読み込み	
+		  //   if (flag === 1){
+		  //   	m++;
+				// var departure = setup(csv_text);
+		  //   	flag = 0;
+		  //   }
 }
 
 function setup(csv){//次回の発車時刻を特定しdepartureに代入
 
 		var arrayed_csv = csv.split('\n');
 
-		if(flag === 0){	
+		// if(flag === 0){	
 
 			var time = new Date();
 			var hour = time.getHours();
@@ -100,9 +123,9 @@ function setup(csv){//次回の発車時刻を特定しdepartureに代入
 			// 		break;
 			// 	}
 			// }
-		}
-		console.log(arrayed_csv[l])
-		return arrayed_csv[l];
+		// }
+		console.log(String(arrayed_csv[l]))
+		return String(arrayed_csv[l]);
 		// var departure = arrayed_csv[m].split(',');
 		// for(var i = 0;i < 3;i++){
 		// 	departure[i] = Number(departure[i]);
@@ -117,9 +140,18 @@ function disp(departure){
 	var hour = time.getHours();
 	var minute = time.getMinutes();
 	var second = time.getSeconds();
-	var hour_dif = Number(departure[0]) - hour,
-		minute_dif = Number(departure[1]) - minute - 1,
-		second_dif = 59 + (Number(departure[2]) - second);
+
+	var second_dif = 59 + (Number(departure[2]) - second);
+	var minute_dif = Number(departure[1]) - minute - 1;
+	var hour_dif = Number(departure[0]) - hour;
+	if (second_dif < 0) {
+		minute_dif--;
+		second_dif += 60;
+	}
+	if (minute_dif < 0) {
+		hour_dif--;
+		minute_dif += 60;
+	}
 
 	var	text = document.getElementById("TDT"),
 		time_dif = hour_dif + ":" + minute_dif + ":" + second_dif;
@@ -128,7 +160,7 @@ function disp(departure){
 		console.log(departure);
 
 	// if((Number(departure[0]) == hour) && (Number(departure[1]) == minute) && (Number(departure[2]) == second))
-	if(hour_dif - minute_dif - second_dif)
-		console.log()
-		flag = 1;
+	// if(hour_dif - minute_dif - second_dif)
+		// console.log()
+		// flag = 1;
 }
