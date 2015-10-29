@@ -30,8 +30,8 @@ function delay(){
 }
 
 function main(csv){
-	var arrayed_csv = setup(csv);
-		departure = arrayed_csv.split(',');
+	var next_train_time = setup(csv);
+		departure = next_train_time.split(',');
 		for(var i = 0;i < 3;i++){
 			departure[i] = Number(departure[i]);
 		}
@@ -41,13 +41,9 @@ function main(csv){
 	// while(1){
 			// setTimeout('disp',1000);
 			// disp(departure);
-	var repeat = setInterval(function(departure) {
+	var repeat = setInterval(
+		function(departure) {
 		// var departure = setup(csv_text);
-		var arrayed_csv = setup(csv);
-			departure = arrayed_csv.split(',');
-			for(var i = 0;i < 3;i++){
-				departure[i] = Number(departure[i]);
-			}
 			console.log(departure);
 			disp(departure);
 
@@ -82,27 +78,31 @@ function setup(csv){//次回の発車時刻を特定しdepartureに代入
 
 				if(dif < 0){//発車時刻が過ぎていたら回避
 					continue;
-				}else{
-					min_hour = dif;
+				}else {
+					if(arrayed_csv[j].substring(3,5) < minute){
+						continue;
+					}
 					l = j;
+					break;
 				}
 			}
-			for(var j = l;j < arrayed_csv.length;j++){
-				var minute = time.getMinutes();
-				var dif = Number(arrayed_csv[j].substring(3,5)) - minute;
+			// for(var j = l;j < arrayed_csv.length;j++){
+			// 	var minute = time.getMinutes();
+			// 	var dif = Number(arrayed_csv[j].substring(3,5)) - minute;
 
-				if((arrayed_csv[l].substring(0,2)) < (arrayed_csv[j].substring(0,2))) break;
+			// 	if((arrayed_csv[l].substring(0,2)) < (arrayed_csv[j].substring(0,2))) break;
 
-				if(dif < 0){//発車時刻が過ぎていたら回避
-					continue;
-				}else{
-					min_minute = dif;
-					m = j;
-				}
-			}
+			// 	if(dif < 0){//発車時刻が過ぎていたら回避
+			// 		continue;
+			// 	}else {
+			// 		min_minute = dif;
+			// 		m = j;
+			// 		break;
+			// 	}
+			// }
 		}
-
-		return arrayed_csv[m];
+		console.log(arrayed_csv[l])
+		return arrayed_csv[l];
 		// var departure = arrayed_csv[m].split(',');
 		// for(var i = 0;i < 3;i++){
 		// 	departure[i] = Number(departure[i]);
