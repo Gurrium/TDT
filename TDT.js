@@ -1,4 +1,4 @@
-flag = 0,m = 0,csv_text = '';
+var flag = 0,m = 0,csv_text = '';
 
 function loadTextFile(){
 	httpObj = createXMLHttpRequest(displayData);
@@ -82,10 +82,10 @@ function setup(csv){//次回の発車時刻を特定しdepartureに代入
 
 				if(dif < 0){//発車時刻が過ぎていたら回避
 					continue;
-				}
-				if(min_hour > dif){
+				} else {
 					min_hour = dif;
 					l = j;
+					break;
 				}
 			}
 			for(var j = l;j < arrayed_csv.length;j++){
@@ -94,11 +94,12 @@ function setup(csv){//次回の発車時刻を特定しdepartureに代入
 
 				if((arrayed_csv[l].substring(0,2)) < (arrayed_csv[j].substring(0,2))) break;
 
-				if(dif < 0)//発車時刻が過ぎていたら回避
+				if(dif < 0) {//発車時刻が過ぎていたら回避
 					continue;
-				if(min_minute > dif){
+				} else {
 					min_minute = dif;
 					m = j;
+					break;
 				}
 			}
 		}
