@@ -30,41 +30,50 @@ function delay(){
 }
 
 function main(csv){
-	var departure = setup(csv);
+	var arrayed_csv = setup(csv);
+		departure = arrayed_csv.split(',');
+		for(var i = 0;i < 3;i++){
+			departure[i] = Number(departure[i]);
+		}
 	// setup(csv);
 	// disp(departure);
 	// setInterval('disp',1000,departure);
 	// while(1){
 			// setTimeout('disp',1000);
 			// disp(departure);
-	console.log(departure);
-	var hoge = setInterval(function() {
-		var departure = setup(csv_text);
+	var repeat = setInterval(function(departure) {
+		// var departure = setup(csv_text);
+	var arrayed_csv = setup(csv);
+		departure = arrayed_csv.split(',');
+		for(var i = 0;i < 3;i++){
+			departure[i] = Number(departure[i]);
+		}
+		console.log(departure);
 		disp(departure);
 
 	    //終了条件
-	    if (flag === 1){
-	    	flag = 0;
-			var departure = setup(csv_text);
-	    	m++;
-	    }
-	}, 1000);
+	  //   if (flag === 1){
+	  //   	m++;
+			// var departure = setup(csv_text);
+	  //   	flag = 0;
+	  //   }
+	}, 1000,departure);
 	// }
 
 }
 
 function setup(csv){//次回の発車時刻を特定しdepartureに代入
 
+		var arrayed_csv = csv.split('\n');
+
 		if(flag === 0){	
-			var arrayed_csv = csv.split('\n');
 
 			var time = new Date();
 			var hour = time.getHours();
 			var	minute = time.getMinutes();
 			var second = time.getSeconds();
 
-			var l,m;
-			l = m = 0;
+			var l = 0;
 			var min_hour,min_minute,min_second;
 			min_hour = 23;min_minute = min_second = 59;
 
@@ -93,9 +102,14 @@ function setup(csv){//次回の発車時刻を特定しdepartureに代入
 				}
 			}
 		}
-		var departure = arrayed_csv[m].split(',');
 
-		return departure;
+		return arrayed_csv[m];
+		// var departure = arrayed_csv[m].split(',');
+		// for(var i = 0;i < 3;i++){
+		// 	departure[i] = Number(departure[i]);
+		// }
+		// console.log(departure[0],departure[1],departure[2]);
+		// return departure[0],departure[1],departure[2];
 		
 }
 
@@ -106,13 +120,15 @@ function disp(departure){
 	var second = time.getSeconds();
 	var hour_dif = Number(departure[0]) - hour,
 		minute_dif = Number(departure[1]) - minute - 1,
-		second_dif = 60 - second;
+		second_dif = 60 + (Number(departure[2]) - second);
 
 	var	text = document.getElementById("TDT"),
 		time_dif = hour_dif + ":" + minute_dif + ":" + second_dif;
 	
 		text.innerHTML = time_dif;
+		console.log(departure);
 
-	if((departure[0] == hour) && (departure[1] == minute) && (departure[2] == second))
+	// if((Number(departure[0]) == hour) && (Number(departure[1]) == minute) && (Number(departure[2]) == second))
+	if(departure[2] < 59)
 		flag = 1;
 }
