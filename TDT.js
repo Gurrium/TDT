@@ -83,12 +83,12 @@ function setup(csv){//次回の発車時刻を特定しdepartureに代入
 				if(dif < 0){//発車時刻が過ぎていたら回避
 					continue;
 				}else {
-					if(arrayed_csv[j].substring(3,5) < minute){
+					if(arrayed_csv[j].substring(3,5) < minute && dif == 0){
 						continue;
 					}
 					l = j;
 					break;
-				}
+				} 
 			}
 			// for(var j = l;j < arrayed_csv.length;j++){
 			// 	var minute = time.getMinutes();
