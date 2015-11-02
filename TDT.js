@@ -80,10 +80,15 @@ function disp(departure){
 		minute_dif += 60;
 	}
 
-	var time_dif = zero_padding(hour_dif) + ":" + zero_padding(minute_dif) + ":" + zero_padding(second_dif);
-	document.getElementById("TDT").innerHTML = time_dif;
-}
+	var diff = second_dif + minute_dif*60 + hour_dif*60*60;
 
-function zero_padding(num){
-	return ('0' + num).slice(-2);
+	if(diff < 0) {
+		diff = 0;
+	}
+
+	// Instantiate a coutdown FlipClock
+	clock = $('#TDT').FlipClock(diff, {
+		clockFace: 'HourlyCounter',
+		countdown: true
+	});	
 }
