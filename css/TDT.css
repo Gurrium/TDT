@@ -1,0 +1,24 @@
+body {
+	background: url("../img/binding_dark.png") repeat;
+    position: relative;
+    margin:  0;
+}
+
+#TDT {
+	width: 470px;
+	margin: 30em auto;
+
+	/*margin-top: 13em;
+	margin-left: auto;
+	margin-right: auto;*/
+}
+
+#TDT down {
+	width: 470px;
+	margin: 30em auto;
+}
+
+.flip-clock-label {
+	font-size: 24px;
+	color: #DDD;
+}
