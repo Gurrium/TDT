@@ -1,8 +1,13 @@
 function loadTextFile(){
-	httpObj = createXMLHttpRequest(displayData);
-	if (httpObj){
-		httpObj.open("GET","TDT.csv",true);
-		httpObj.send(null);
+	httpObj1 = createXMLHttpRequest(displayData);
+	if (httpObj1){
+		httpObj1.open("GET","TDT.csv",true);
+		httpObj1.send(null);
+	}
+	httpObj2 = createXMLHttpRequest(displayData);
+	if (httpObj2){
+		httpObj2.open("GET","TDT_down.csv",true);
+		httpObj2.send(null);
 	}
 }
 
@@ -16,13 +21,20 @@ if(navigator.appVersion.indexOf( "KHTML" ) > -1){
 }
  
 function displayData(){
-    if ((httpObj.readyState == 4) && (httpObj.status == 200)){
-        main(ajax_filter(httpObj.responseText));
+    if ((httpObj1.readyState == 4) && (httpObj1.status == 200)){
+        main1(ajax_filter(httpObj1.responseText));
+    }
+    if ((httpObj2.readyState == 4) && (httpObj2.status == 200)){
+        main2(ajax_filter(httpObj2.responseText));
     }
 }
 
-function main(csv){
-	setInterval(function(){disp(setup(csv));}, 1000, csv);
+function main1(csv){
+	setInterval(function(){disp1(setup(csv));}, 1000, csv);
+}
+
+function main2(csv){
+	setInterval(function(){disp2(setup(csv));}, 1000, csv);
 }
 
 function setup(csv){//次回の発車時刻を特定しdepartureに代入
@@ -61,7 +73,7 @@ function setup(csv){//次回の発車時刻を特定しdepartureに代入
 	return departure;
 }
 
-function disp(departure){
+function disp1(departure){
 	var time = new Date();
 	var hour = time.getHours();
 	var minute = time.getMinutes();
@@ -87,7 +99,39 @@ function disp(departure){
 	}
 
 	// Instantiate a coutdown FlipClock
-	clock = $('#TDT').FlipClock(diff, {
+	clock = $('.TDT').FlipClock(diff, {
+		clockFace: 'HourlyCounter',
+		countdown: true
+	});	
+}
+
+function disp2(departure){
+	var time = new Date();
+	var hour = time.getHours();
+	var minute = time.getMinutes();
+	var second = time.getSeconds();
+
+	var hour_dif = Number(departure[0]) - hour;
+	var minute_dif = Number(departure[1]) - minute - 1;
+	var second_dif = 59 + Number(departure[2]) - second;
+	
+	if (second_dif < 0) {
+		minute_dif--;
+		second_dif += 60;
+	}
+	if (minute_dif < 0) {
+		hour_dif--;
+		minute_dif += 60;
+	}
+
+	var diff = second_dif + minute_dif*60 + hour_dif*60*60;
+
+	if(diff < 0) {
+		diff = 0;
+	}
+
+	// Instantiate a coutdown FlipClock	
+	clock = $('.TDT_down').FlipClock(diff, {
 		clockFace: 'HourlyCounter',
 		countdown: true
 	});	
