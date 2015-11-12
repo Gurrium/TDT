@@ -87,8 +87,12 @@ function disp(departure){
 	}
 
 	// Instantiate a coutdown FlipClock
-	clock = $('#TDT').FlipClock(diff, {
-		clockFace: 'HourlyCounter',
-		countdown: true
-	});	
+    clock = $('.TDT').FlipClock(diff, {
+        clockFace: 'HourlyCounter',
+        countdown: true
+    });    
+    clock = $('.TDT_down').FlipClock(diff, {
+        clockFace: 'HourlyCounter',
+        countdown: true
+    });
 }
